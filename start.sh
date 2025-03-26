@@ -1,39 +1,38 @@
-# Is deno selected? It's the default anyways; none of this matters yet.
-if [[ -z "$1" || "$1" == "deno" ]]; then
-    # Make sure deno is on the system
-    if command -v deno > /dev/null 2>&1 && [[ -z "$1" || "$1" == "deno" ]]; then
-        # Kill deno if it is already running 
-        PREV_DENO_PROC_ID=$(pgrep -x "deno")
-        # FIXME: This code assumes that any deno process is for Dispenser. Somehow only check the one for Dispenser.
-        if [ -f "/proc/$PREV_DENO_PROC_ID/exe" ]; then
-            while [[ ! "$ANS" =~ ^[yn]$ ]]; do
-                read -p "Deno is already running! Would you like to restart it? (y/n) " ANS
+#!/bin/bash
 
-                if [[ ! "$ANS" =~ ^[yn]$ ]]; then
-                    echo "Invalid input! Please enter a \"y\" for yes or a \"n\" for no."
-                fi
-            done
+DENO_LOGDIR="logs"
+DENO_COMMAND="./deno run --allow-all src/app.ts"
 
-            if [ "$ANS" = "y" ]; then
-                echo "Killing deno"
-                pkill deno
-            elif [ "$ANS" = "n" ]; then
-                echo "It seems like you were mistaken. The other deno process is $PREV_DENO_PROC_ID. Goodbye!"
-                exit 0
-            fi
-        fi
+# Function to check if a process is running
+is_running() {
+  pgrep -f "$1" > /dev/null 2>&1
+}
 
-        LOGS=logs/
-        # Make the log directory if it doesn't already exist
-        if [ ! -d $LOGS ]; then
-            mkdir -p $LOGS
-        fi
+# Function to start the Deno process and log its output
+start_deno_process() {
+  if is_running "$DENO_COMMAND"; then
+    echo "Deno process is already running. Exiting."
+    exit 1
+  fi
 
-        echo "Starting deno"
-        nohup deno run --allow-read --allow-net --allow-sys src/app.ts > $LOGS/stdlog.txt 2> $LOGS/stderr.txt &
+  # Create log directory if it doesn't exist
+  mkdir -p "$DENO_LOGDIR"
+
+  while true; do
+    LOGFILE="$DENO_LOGDIR/$(date '+%d%m%Y-%H%M%S').log"
+    $DENO_COMMAND 2>&1 | tee -a "$LOGFILE" &
+
+    DENO_PID=$!
+    wait $DENO_PID
+    EXIT_CODE=$?
+    
+    if [ $EXIT_CODE -eq 0 ]; then
+      echo "Deno process exited normally with code $EXIT_CODE. Exiting..." | tee -a "$LOGFILE"
+      exit 0
     else
-        echo "Deno is not installed on your system. Please install it!"
-        exit 1
+      echo "Deno process exited with code $EXIT_CODE. Restarting..." | tee -a "$LOGFILE"
     fi
-fi
-# TODO: If Deno isn't on the system, try other runtimes. Make sure to simply run the npm script in the case of NodeJS. 
+  done
+}
+
+start_deno_process

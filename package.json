@@ -1,16 +1,11 @@
 {
-	"dependencies": {
-		"keyv-mongodb": "^3.0.0"
-	},
 	"name": "dispenser",
 	"version": "1.0.0",
 	"main": "npx tsc src/app.node.js",
 	"directories": {
 		"doc": "docs"
 	},
-	"imports": {
-		"$db": "./src/db.ts"
-	},
+	"dependencies": {},
 	"devDependencies": {},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"

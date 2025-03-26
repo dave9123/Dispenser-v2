@@ -5,4 +5,4 @@ import config from "$config";
 
 initBot(config.bot.token, config.bot.id);
 
-Deno.serve({ port: config.port }, faultTolerantAPI);
+Deno.serve({ port: config.port }, faultTolerantAPI().fetch);

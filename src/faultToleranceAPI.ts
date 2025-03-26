@@ -2,12 +2,12 @@ import type { IsCommandWorkingResponse, Meta } from "../docs/types/index.d.ts";
 
 import config from "$config";
 
-import { Hono } from "https://deno.land/x/hono@v4.0.8/mod.ts";
-import type { Context } from "https://deno.land/x/hono@v4.0.8/mod.ts";
+import { Hono } from "hono";
+import type { Context } from "hono";
 
 import { faultToleranceDb } from "$db";
 
-export default function faultTolerantAPI(): Hono {
+export default function faultTolerantAPI() {
 	const app = new Hono();
 
 	app.get("/", (c: Context) => {
@@ -16,9 +16,11 @@ export default function faultTolerantAPI(): Hono {
 		};
 		return c.json(meta);
 	});
+
 	app.get("/isAlive", (c: Context) => {
 		return c.text("true");
 	});
+
 	app.get("/isCommandWorking", async (c: Context) => {
 		const commandResult = faultToleranceDb.findOne({
 			commandName: await c.req.text(),
@@ -37,6 +39,5 @@ export default function faultTolerantAPI(): Hono {
 
 		return c.json(resp);
 	});
-
 	return app;
 }

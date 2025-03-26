@@ -40,7 +40,7 @@ async function handle(bot: Bot, interaction: Interaction) {
 
 	const cat = interaction.data?.options?.[1]?.value;
 
-	if (userId == "983595671074512967") {
+	if (userId == ) {
 		return await responder.respond("Beep Boop 🤖");
 	}
 

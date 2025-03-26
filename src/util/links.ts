@@ -10,11 +10,24 @@ export default async (
 	ownedLinks: Array<string>,
 	filters: Array<string>,
 	cat: string,
+	premium: boolean
 ) => {
-	const cursor = await linksDb.find({
-		guildId: guildId,
-		cat: cat,
-	});
+	let cursor;
+	if (premium) {
+		cursor = await linksDb.find({
+			guildId: guildId,
+			cat: cat
+		});
+	} else if (!premium) {
+		cursor = await linksDb.find({
+			guildId: guildId,
+			cat: cat,
+			$or: [
+				{ isPremium: false },
+				{ isPremium: { $exists: false } }
+			]
+		});
+	}
 	const links = await cursor.toArray();
 	if (links.length === 0) return "There are no links!";
 

@@ -103,7 +103,7 @@ export default async function (
 		}; having a total of ${times} links`,
 	);
 
-	const link = await getLinks(guildId, links, filters, cat);
+	const link = await getLinks(guildId, links, filters, cat, premium);
 
 	if (link instanceof Error) return await responder.respond(link.message);
 	else if (typeof link !== "string") {
@@ -147,7 +147,7 @@ export default async function (
 			})
 			.catch((error: Error): void => console.log(error));
 
-		return await responder.respond("Check dms!");
+		return await responder.respond("Check DMs!");
 	} else {
 		return await responder.respondEmbed({
 			type: "rich",
