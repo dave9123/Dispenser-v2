@@ -49,8 +49,18 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
         isPremium,
     };
 
+    let validLink;
+    try {
+        new URL(link).hostname;
+        validLink = true;
+    } catch (e) {
+        validLink = false;
+    }
+
     if (await linksDb.findOne(toInsert)) {
         await responder.respond("You can't insert a duplicate link!");
+    } else if (validLink === false) {
+        await responder.respond("The link provided isn't valid which may cause filter checking to fail. However, link has been added successfully.");
     } else {
         await linksDb.insertOne(toInsert);
         await responder.respond(`Added ${link} to ${cat}!`);

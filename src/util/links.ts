@@ -47,26 +47,37 @@ export default async (
 	let unblockedList = filteredLinks;
 
 	if (filters.includes("ls")) {
-		unblockedList = unblockedList.filter(async (link) =>
-			await ls(link)
-		);
+		unblockedList = unblockedList.filter(async (link) => {
+			try {
+				return await ls(link);
+			}
+			catch (e) {
+				console.error("An error occured while checking on Lightspeed", e);
+				return true;
+			}
+		});
 
 		/*
-        TODO: For debug mode only
-        console.log(
-            `These ${cat} links are unblocked for Lightspeed ${unblockedList.join(
-                ", ",
-            )}`,
-        );
-        */
+		TODO: For debug mode only
+		console.log(
+			`These ${cat} links are unblocked for Lightspeed ${unblockedList.join(
+				", ",
+			)}`,
+		);
+		*/
 
 		if (links.length === 0) return noLinksMessage("Lightspeed");
 	}
 
 	if (filters.includes("paloalto")) {
-		unblockedList = unblockedList.filter(async (link) =>
-			await paloalto(link)
-		);
+		unblockedList = unblockedList.filter(async (link) => {
+			try {
+				await paloalto(link)
+			} catch (e) {
+				console.error("An error occured while checking on Palo Alto Networks", e);
+				return true;
+			}
+		});
 
 		if (links.length === 0) return noLinksMessage("Palo Alto");
 	}
