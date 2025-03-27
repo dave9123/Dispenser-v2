@@ -45,8 +45,8 @@ const blockedCats = [
 ];
 
 function lightspeedCategorize(num: number): string | number {
-	Deno.readFile("src/util/checker/ls.json").then((data) => {
-		const catJson = JSON.parse(new TextDecoder().decode(data));
+	Deno.readFile("src/util/checker/ls.json").then(async (data) => {
+		const catJson = JSON.parse(new TextDecoder().decode(await data));
 		for (let i = 0; i < catJson.length; i++) {
 			if (catJson[i]["CategoryNumber"] === num) {
 				return catJson[i]["CategoryName"];
