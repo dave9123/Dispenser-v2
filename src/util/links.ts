@@ -47,39 +47,37 @@ export default async (
 	let unblockedList = filteredLinks;
 
 	if (filters.includes("ls")) {
-		unblockedList = unblockedList.filter(async (link) => {
-			try {
-				return await ls(link);
-			}
-			catch (e) {
-				console.error("An error occured while checking on Lightspeed", e);
-				return true;
-			}
-		});
-
-		/*
-		TODO: For debug mode only
-		console.log(
-			`These ${cat} links are unblocked for Lightspeed ${unblockedList.join(
-				", ",
-			)}`,
-		);
-		*/
-
-		if (links.length === 0) return noLinksMessage("Lightspeed");
+		unblockedList = (
+			await Promise.all(
+				unblockedList.map(async (link: string) => {
+					try {
+						return (await ls(link)) ? link : null;
+					} catch (_e) {
+						console.error("An error occurred while checking on Lightspeed");
+						return null;
+					}
+				})
+			)
+		).filter((link): link is string => link !== null);
+	
+		if (unblockedList.length === 0) return noLinksMessage("Lightspeed");
 	}
-
+	
 	if (filters.includes("paloalto")) {
-		unblockedList = unblockedList.filter(async (link) => {
-			try {
-				await paloalto(link)
-			} catch (e) {
-				console.error("An error occured while checking on Palo Alto Networks", e);
-				return true;
-			}
-		});
-
-		if (links.length === 0) return noLinksMessage("Palo Alto");
+		unblockedList = (
+			await Promise.all(
+				unblockedList.map(async (link: string) => {
+					try {
+						return (await paloalto(link)) ? link : null;
+					} catch (_e) {
+						console.error("An error occurred while checking on Palo Alto Networks");
+						return null;
+					}
+				})
+			)
+		).filter((link): link is string => link !== null);
+	
+		if (unblockedList.length === 0) return noLinksMessage("Palo Alto");
 	}
 
 	return unblockedList[Math.floor(Math.random() * unblockedList.length)];
