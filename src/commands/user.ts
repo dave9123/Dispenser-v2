@@ -40,10 +40,6 @@ async function handle(bot: Bot, interaction: Interaction) {
 
 	const cat = interaction.data?.options?.[1]?.value;
 
-	if (userId == ) {
-		return await responder.respond("Beep Boop 🤖");
-	}
-
 	if (cat) {
 		const data = await usersDb.findOne({
 			guildId: String(interaction.guildId),

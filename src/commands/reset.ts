@@ -7,17 +7,17 @@ const data = {
     description: "Sets the monthly limit for a category",
     type: ApplicationCommandTypes.ChatInput,
     options: [
+		{
+            type: ApplicationCommandOptionTypes.String,
+            name: "category",
+            description: "The category to be limited",
+            required: true,
+        },
         {
             type: ApplicationCommandOptionTypes.Integer,
             name: "limit",
             description: "The limit, set to -1 for unlimited",
             required: false,
-        },
-        {
-            type: ApplicationCommandOptionTypes.String,
-            name: "category",
-            description: "The category to be limited",
-            required: true,
         },
         {
             type: ApplicationCommandOptionTypes.Integer,
