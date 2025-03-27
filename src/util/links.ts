@@ -77,7 +77,7 @@ export default async (
 			)
 		).filter((link): link is string => link !== null);
 	
-		if (unblockedList.length === 0) return noLinksMessage("Palo Alto");
+		if (unblockedList.length === 0) return noLinksMessage("Palo Alto Networks");
 	}
 
 	return unblockedList[Math.floor(Math.random() * unblockedList.length)];
