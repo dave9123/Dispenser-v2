@@ -44,16 +44,20 @@ const blockedCats = [
 	"violence.extremisim"
 ];
 
-function lightspeedCategorize(num: number): string | number {
-	Deno.readFile("src/util/checker/ls.json").then(async (data) => {
-		const catJson = JSON.parse(new TextDecoder().decode(await data));
-		for (let i = 0; i < catJson.length; i++) {
-			if (catJson[i]["CategoryNumber"] === num) {
-				return catJson[i]["CategoryName"];
-			}
-		}
-	});
-	return num; // No category
+async function lightspeedCategorize(num: number): Promise<string | number> {
+    try {
+        const data = await Deno.readFile("src/util/checker/ls.json");
+        const catJson = JSON.parse(new TextDecoder().decode(data));
+        for (let i = 0; i < catJson.length; i++) {
+            if (catJson[i]["CategoryNumber"] === num) {
+                return catJson[i]["CategoryName"];
+            }
+        }
+		return num;
+    } catch (error) {
+        console.error("Error reading or parsing ls.json:", error);
+		return num
+    }
 }
 
 export default async function (link: string): Promise<boolean> {
@@ -85,7 +89,7 @@ export default async function (link: string): Promise<boolean> {
 	const body = await response.json();
 	const categories = [body.data.a.cat, body.data.b.cat];
 
-	const categorized = categories.map((cat) => lightspeedCategorize(cat));
+	const categorized = categories.map(async (cat) => await lightspeedCategorize(cat));
 	console.log(`[Lightspeed] Categories for ${url}: ${categorized}`);
 	const isUnblocked = blockedCats.every((cat) => !categorized.includes(cat));
 	return isUnblocked;
