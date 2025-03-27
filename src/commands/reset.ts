@@ -1,83 +1,74 @@
-import { ApplicationCommandTypes, ApplicationCommandOptionTypes, Bot, Interaction } from "discordeno";
-import { limitsDb } from "$db";
+import {
+	ApplicationCommandOptionTypes,
+	ApplicationCommandTypes,
+	Bot,
+	Interaction,
+} from "discordeno";
+
+import { usersDb } from "$db";
+
 import Responder from "../util/responder.ts";
 
 const data = {
-    name: "limit",
-    description: "Sets the monthly limit for a category",
-    type: ApplicationCommandTypes.ChatInput,
-    options: [
-		{
-            type: ApplicationCommandOptionTypes.String,
-            name: "category",
-            description: "The category to be limited",
+	name: "reset",
+	description: "Resets a user's proxy limit",
+	type: ApplicationCommandTypes.ChatInput,
+	options: [
+        {
+            type: ApplicationCommandOptionTypes.Boolean,
+            name: "global",
+            description: "Resets the server's limit",
             required: true,
         },
-        {
-            type: ApplicationCommandOptionTypes.Integer,
-            name: "limit",
-            description: "The limit, set to -1 for unlimited",
-            required: false,
-        },
-        {
-            type: ApplicationCommandOptionTypes.Integer,
-            name: "premiumlimit",
-            description: "The limit for premium users, set to -1 for unlimited",
-            required: false,
-        },
-    ],
-    dmPermission: false,
+		{
+			type: ApplicationCommandOptionTypes.User,
+			name: "user",
+			description: "The user to reset",
+			required: false,
+		},
+		{
+			type: ApplicationCommandTypes.Message,
+			name: "category",
+			description: "The category to get the links from",
+			required: false,
+		},
+	],
+	dmPermission: false,
 };
 
-async function handle(bot: Bot, interaction: Interaction): Promise<void> {
-    const responder = new Responder(bot, interaction.id, interaction.token);
+async function handle(bot: Bot, interaction: Interaction) {
+	const responder = new Responder(bot, interaction.id, interaction.token);
 
-    const limit: number | undefined = interaction.data?.options?.find(option => option.name === "limit")?.value;
-    const cat: string = interaction.data?.options?.find(option => option.name === "category")?.value;
-    const premiumLimit: number | undefined = interaction.data?.options?.find(option => option.name === "premiumlimit")?.value;
+    const global = interaction.data?.options?.find(option => option.name === "global")?.value as boolean;
+	const user = interaction.data?.options?.find(option => option.name === "user")?.value;
+    const cat = interaction.data?.options?.find(option => option.name === "category")?.value as string | undefined;
 
-    if (!cat) {
-        await responder.respond("Please provide a category!");
-        return;
-    } else if ((limit !== undefined && isNaN(limit)) || (premiumLimit !== undefined && isNaN(premiumLimit))) {
-        await responder.respond("Please provide a valid limit!");
-        return;
-    } else if ((limit !== undefined && limit < -1) || (premiumLimit !== undefined && premiumLimit < -1)) {
-        await responder.respond("Limit must be greater than or equal to -1!");
-        return;
-    }
+	const filter: {
+		guildId: string;
+		userId?: string;
+		cat?: string;
+	} = {
+		guildId: String(interaction.guildId)
+	};
 
-    const updateData: { [key: string]: number } = {};
-    if (limit !== undefined) {
-        updateData.limit = limit;
-    }
-    if (premiumLimit !== undefined) {
-        updateData.premiumLimit = premiumLimit;
-    }
-
-    await limitsDb.updateMany(
-        {
-            guildId: String(interaction.guildId),
-            cat: cat,
-        },
-        {
-            $set: updateData,
-        },
-        {
-            upsert: true,
-        },
-    );
-
-    let responseMessage = `Successfully set ${cat}`;
-    if (limit !== undefined) {
-        responseMessage += ` limit to ${limit}`;
-    }
-    if (premiumLimit !== undefined) {
-        responseMessage += ` and premium limit to ${premiumLimit}`;
-    }
-    responseMessage += "!";
-
-    await responder.respond(responseMessage);
+    if (!global && !user) return await responder.respond("Please set a user to reset!");
+	if (cat) filter.cat = cat;
+    if (!global && user) filter.userId = String(user);
+    if (global && user) return await responder.respond("Please set either a user or the server to reset!");
+	await usersDb.updateMany(
+		filter,
+		{
+			$set: {
+				links: [],
+				times: 0,
+			},
+		},
+		{
+			upsert: true,
+		},
+	);
+    if (!global && user) return await responder.respond(`Reset ${user}'s proxy limit!`);
+    if (global && !user) return await responder.respond(`Reset the server's proxy limit!`);
 }
 
 const adminOnly = true;

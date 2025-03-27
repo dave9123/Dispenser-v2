@@ -29,7 +29,8 @@ async function handle(bot: Bot, interaction: Interaction) {
 
 	const chan = interaction.data?.options?.[0]?.value;
 
-	await responder.respond(`The channel is ${chan}`);
+	//await responder.respond(`The channel is ${chan}`);
+	return await responder.respond("This command is still work in progress.");
 }
 
 const adminOnly = true;

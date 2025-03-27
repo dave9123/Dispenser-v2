@@ -1,4 +1,5 @@
-import blocked from "./checker/ls.ts";
+import ls from "./checker/ls.ts";
+import paloalto from "./checker/paloalto.ts";
 
 import { linksDb } from "$db";
 
@@ -47,7 +48,7 @@ export default async (
 
 	if (filters.includes("ls")) {
 		unblockedList = unblockedList.filter(async (link) =>
-			await !blocked(link)
+			await ls(link)
 		);
 
 		/*
@@ -60,6 +61,14 @@ export default async (
         */
 
 		if (links.length === 0) return noLinksMessage("Lightspeed");
+	}
+
+	if (filters.includes("paloalto")) {
+		unblockedList = unblockedList.filter(async (link) =>
+			await paloalto(link)
+		);
+
+		if (links.length === 0) return noLinksMessage("Palo Alto");
 	}
 
 	return unblockedList[Math.floor(Math.random() * unblockedList.length)];

@@ -135,6 +135,10 @@ async function handle(bot: Bot, interaction: Interaction) {
 			value: "ls",
 		},
 		{
+			label: "Palo Alto Networks",
+			value: "paloalto",
+		},
+		{
 			label: "Other",
 			value: "other",
 		},

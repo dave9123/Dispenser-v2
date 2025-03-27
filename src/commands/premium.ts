@@ -26,9 +26,7 @@ const data = {
 
 async function handle(bot: Bot, interaction: Interaction) {
 	const responder = new Responder(bot, interaction.id, interaction.token);
-
 	const guildId = String(interaction.guildId);
-
 	const roleId = interaction.data?.options?.[0]?.value;
 
 	rolesDb.updateMany(

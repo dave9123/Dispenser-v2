@@ -5,7 +5,6 @@ const blockedCats = [
 	"adult",
 	"drugs",
 	"gambling",
-	"games",
 	"security.hacking",
 	"violence.hate",
 	"porn",
@@ -85,8 +84,9 @@ export default async function (link: string): Promise<boolean> {
 
 	const body = await response.json();
 	const categories = [body.data.a.cat, body.data.b.cat];
-	const categorized = categories.map((cat) => lightspeedCategorize(cat));
-	const isUnblocked = blockedCats.every((cat) => !categorized.includes(cat));
 
+	const categorized = categories.map((cat) => lightspeedCategorize(cat));
+	console.log(`[Lightspeed] Categories for ${url}: ${categorized}`);
+	const isUnblocked = blockedCats.every((cat) => !categorized.includes(cat));
 	return isUnblocked;
 }
