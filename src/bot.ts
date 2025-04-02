@@ -107,9 +107,8 @@ export default async function initBot(
 						const isFilter = id === "filter";
 
 						if (isDmRequest) requestHandle(bot, interaction, true);
-						else if (isRequest) {
-							requestHandle(bot, interaction, false);
-						} else if (isReport) reportHandle(bot, interaction);
+						else if (isRequest) requestHandle(bot, interaction, false);
+						else if (isReport) reportHandle(bot, interaction);
 						else if (isCat) catHandle(bot, interaction);
 						else if (isFilter) filterHandle(bot, interaction);
 					}

@@ -36,8 +36,8 @@ const data = {
 async function handle(bot: Bot, interaction: Interaction): Promise<void> {
     const responder = new Responder(bot, interaction.id, interaction.token);
 
-    const link = interaction.data?.options?.find(option => option.name === "link")?.value;
-    const cat = interaction.data?.options?.find(option => option.name === "category")?.value;
+    const link = interaction.data?.options?.find(option => option.name === "link")?.value as string;
+    const cat = interaction.data?.options?.find(option => option.name === "category")?.value as string;
     const premium = interaction.data?.options?.find(option => option.name === "premium")?.value;
 
     const isPremium = premium === "true";
@@ -54,6 +54,7 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
         new URL(link).hostname;
         validLink = true;
     } catch (e) {
+        console.info("Invalid link provided:", e);
         validLink = false;
     }
 

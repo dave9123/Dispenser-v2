@@ -11,3 +11,4 @@ sshRoot.sh
 # Logging
 logs/
 
+deno

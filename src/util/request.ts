@@ -14,10 +14,9 @@ export default async function (
 	dmUser: boolean,
 ) {
 	const responder = new Responder(bot, interaction.id, interaction.token);
-
+	await responder.deferResponse();
 	const userId = String(interaction.user.id);
 	const guildId = String(interaction.guildId);
-
 	const name = interaction.user.username;
 
 	const admin: boolean = await isAdmin(interaction.member, guildId);
@@ -70,13 +69,13 @@ export default async function (
 		guildId: guildId,
 		cat: cat,
 	})) || {
-		limit: 0,
-		premiumLimit: 0,
+		limit: -1,
+		premiumLimit: -1,
 	};
 
 	limit = premiumLimit || limit;
 
-	const noLimit: boolean = limit === 0;
+	const noLimit: boolean = limit === -1;
 
 	console.log(noLimit ? `There is no limit` : `The limit is ${limit}`);
 
@@ -111,7 +110,6 @@ export default async function (
 			"Unknown error retrieving link; this incident has been reported!",
 		);
 	}
-
 	await usersDb.updateMany(
 		{
 			_id: user?._id,
@@ -145,18 +143,34 @@ export default async function (
 					},
 				],
 			})
-			.catch((error: Error): void => console.log(error));
-
-		return await responder.respond("Check DMs!");
+			.catch(async (error: Error): Promise<void> => {
+				console.error(`Failed to send DM to ${name} (${userId}) for ${cat}:`, error);
+				if (error.message.includes("Cannot send messages to this user")) {
+					await responder.editOriginalResponse("I cannot DM you, please check your privacy settings");
+					return;
+				}
+			});
+		return await responder.editOriginalResponse("Check DMs!");
 	} else {
-		return await responder.respondEmbed({
+		return await responder.sendEmbed({
 			type: "rich",
 			color: 0xe071ac,
 			title: cat,
-			description: `${link}`,
+			description: `${link}\n${linksLeftMsg("You have ")}`,
 			footer: {
 				text: linksLeftMsg("You have "),
 			},
 		});
+		/*return await responder.editOriginalResponse({
+			embeds: [{
+				type: "rich",
+				color: 0xe071ac,
+				title: cat,
+				description: `${link}`,
+				footer: {
+					text: linksLeftMsg("You have "),
+				},
+			}]
+		});*/
 	}
 }

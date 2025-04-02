@@ -16,8 +16,6 @@ const blockedCats = [
 
 export default async function (link: string): Promise<boolean> {
     console.info(`Checking ${link} on Palo Alto Networks`);
-    const url: string = new URL(link).hostname || link;
-
     const response = await fetch(`https://urlfiltering.paloaltonetworks.com/single_cr/?url=${link}`, {
         "credentials": "include",
         "headers": {
@@ -40,7 +38,7 @@ export default async function (link: string): Promise<boolean> {
     });
 
     if (!response.ok) {
-        console.error(`Failed to fetch data for ${url} from Lightspeed`);
+        console.error(`[Palo Alto Networks] Failed to fetch data for ${link}`);
         return false;
     }
 
@@ -50,13 +48,12 @@ export default async function (link: string): Promise<boolean> {
     );
 
     if (!categoryMatch || categoryMatch.length < 2) {
-        console.error(`Failed to extract category for ${url}`);
+        console.error(`Failed to extract category for ${link}`);
         return false;
     }
 
     const category = categoryMatch[1].trim();
-    console.info(`[Palo Alto Networks] Category for ${url}: ${category}`);
-
     const isUnblocked = !blockedCats.includes(category);
+    console.info(`[Palo Alto Networks] ${link} is under ${category} and may ${isUnblocked ? "not " : ""}be blocked`);
     return isUnblocked;
 }

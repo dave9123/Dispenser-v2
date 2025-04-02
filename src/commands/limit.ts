@@ -35,17 +35,26 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 	const responder = new Responder(bot, interaction.id, interaction.token);
 	
 	const cat = interaction.data?.options?.find(option => option.name === "category")?.value as string;
-	const limit = interaction.data?.options?.find(option => option.name === "limit")?.value as number | undefined;
-	const premiumLimit = interaction.data?.options?.find(option => option.name === "premiumlimit")?.value as number | undefined;
+	const limit = Number(interaction.data?.options?.find(option => option.name === "limit")?.value as string | undefined);
+	const premiumLimit = Number(interaction.data?.options?.find(option => option.name === "premiumlimit")?.value as string | undefined);
 
 	if (!cat) {
 		await responder.respond("Please provide a category!");
 		return;
-	} else if ((limit !== undefined && isNaN(limit)) || (premiumLimit !== undefined && isNaN(premiumLimit))) {
+	} else if ((limit !== undefined || isNaN(limit)) || (premiumLimit !== undefined && isNaN(premiumLimit))) {
 		await responder.respond("Please provide a valid limit!");
 		return;
 	} else if ((limit !== undefined && limit < -1) || (premiumLimit !== undefined && premiumLimit < -1)) {
 		await responder.respond("Limit must be greater than or equal to -1!");
+		return;
+	}
+	
+	const categoryExists = await limitsDb.findOne({
+		guildId: String(interaction.guildId),
+		cat: cat,
+	});
+	if (!categoryExists) {
+		await responder.respond("This category does not exist!");
 		return;
 	}
 

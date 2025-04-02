@@ -139,6 +139,14 @@ async function handle(bot: Bot, interaction: Interaction) {
 			value: "paloalto",
 		},
 		{
+			label: "FortiGuard",
+			value: "fortiguard",
+		},
+		{
+			label: "Linewize",
+			value: "linewize",
+		},
+		{
 			label: "Other",
 			value: "other",
 		},
