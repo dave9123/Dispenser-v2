@@ -14,7 +14,6 @@ export default async function (
 	dmUser: boolean,
 ) {
 	const responder = new Responder(bot, interaction.id, interaction.token);
-	await responder.deferResponse();
 	const userId = String(interaction.user.id);
 	const guildId = String(interaction.guildId);
 	const name = interaction.user.username;
@@ -146,11 +145,18 @@ export default async function (
 			.catch(async (error: Error): Promise<void> => {
 				console.error(`Failed to send DM to ${name} (${userId}) for ${cat}:`, error);
 				if (error.message.includes("Cannot send messages to this user")) {
-					await responder.editOriginalResponse("I cannot DM you, please check your privacy settings");
-					return;
+					return await responder.sendEmbed({
+						type: "rich",
+						color: 0xe071ac,
+						title: cat,
+						description: `${link}\n${linksLeftMsg("You have ")}`,
+						footer: {
+							text: linksLeftMsg("You have "),
+						},
+					});
 				}
 			});
-		return await responder.editOriginalResponse("Check DMs!");
+		return await responder.send("Check DMs!");
 	} else {
 		return await responder.sendEmbed({
 			type: "rich",
