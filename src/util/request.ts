@@ -145,7 +145,7 @@ export default async function (
 			.catch(async (error: Error): Promise<void> => {
 				console.error(`Failed to send DM to ${name} (${userId}) for ${cat}:`, error);
 				if (error.message.includes("Cannot send messages to this user")) {
-					return await responder.sendEmbed({
+					return await responder.respondEmbed({
 						type: "rich",
 						color: 0xe071ac,
 						title: cat,
@@ -156,9 +156,9 @@ export default async function (
 					});
 				}
 			});
-		return await responder.send("Check DMs!");
+		return await responder.respond("Check DMs!");
 	} else {
-		return await responder.sendEmbed({
+		return await responder.respondEmbed({
 			type: "rich",
 			color: 0xe071ac,
 			title: cat,

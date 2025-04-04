@@ -14,7 +14,7 @@
 		"type": "git",
 		"url": "git+https://github.com/VyperGroup/Dispenser.git"
 	},
-	"author": "Ryan Wilson",
+	"author": "Ryan Wilson and Dave Turmawan",
 	"license": "AGPL-3.0-or-later",
 	"bugs": {
 		"url": "https://github.com/VyperGroup/Dispenser/issues"

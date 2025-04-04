@@ -54,8 +54,8 @@ export default async (
                 if (await filterFn(link)) {
                     validLinks.push(link);
                 }
-            } catch (_e) {
-                console.error(`An error occurred while checking on ${filterName}`);
+            } catch (e) {
+                console.error(`An error occurred while checking on ${filterName}:`, e);
             }
         }
         if (validLinks.length === 0) throw new Error(noLinksMessage(filterName));
@@ -78,6 +78,7 @@ export default async (
             unblockedList = await checkLinks(unblockedList, linewize, "Linewize");
         }
     } catch (error: Error) {
+        console.error(error);
         return error.message;
     }
 
