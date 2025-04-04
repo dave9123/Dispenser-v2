@@ -28,6 +28,6 @@ export default async function (link: string): Promise<boolean> {
 
     const body = await response.json();
     const isUnblocked = body.redirect_uri === undefined;
-    console.info(`[Linewize] ${link} is under ${body["signature"]["category"]} ${body["signature"]["subCategory"]} and may ${isUnblocked ? "not " : ""}be blocked`);
+    console.info(`[Linewize] ${link} may ${isUnblocked ? "not " : ""}be blocked`);
     return isUnblocked;
 }
