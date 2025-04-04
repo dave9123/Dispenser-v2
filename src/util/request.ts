@@ -144,6 +144,7 @@ export default async function (
 			})
 			.catch(async (error: Error): Promise<void> => {
 				console.error(`Failed to send DM to ${name} (${userId}) for ${cat}:`, error);
+				console.log("includes",error.message.includes("Cannot send messages to this user"));
 				if (error.message.includes("Cannot send messages to this user")) {
 					return await responder.respondEmbed({
 						type: "rich",
