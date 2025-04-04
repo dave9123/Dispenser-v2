@@ -149,7 +149,7 @@ export default async function (
 						type: "rich",
 						color: 0xe071ac,
 						title: cat,
-						description: `${link}\n${linksLeftMsg("You have ")}`,
+						description: `${link}`,
 						footer: {
 							text: linksLeftMsg("You have "),
 						},
@@ -162,7 +162,7 @@ export default async function (
 			type: "rich",
 			color: 0xe071ac,
 			title: cat,
-			description: `${link}\n${linksLeftMsg("You have ")}`,
+			description: `${link}`,
 			footer: {
 				text: linksLeftMsg("You have "),
 			},
