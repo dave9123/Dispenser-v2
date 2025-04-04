@@ -64,7 +64,7 @@ export default async (
 
     // Apply filters sequentially
     let unblockedList = filteredLinks;
-    try {
+    /*try {
         if (filters.includes("ls")) {
             unblockedList = await checkLinks(unblockedList, ls, "Lightspeed");
         }
@@ -80,7 +80,7 @@ export default async (
     } catch (error: Error) {
         console.error(error);
         return error.message;
-    }
+    }*/
 
     // Return a random link from the unblocked list
     return unblockedList[Math.floor(Math.random() * unblockedList.length)];
