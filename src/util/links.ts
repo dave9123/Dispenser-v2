@@ -5,8 +5,12 @@ import linewize from "./checker/linewize.ts";
 
 import { linksDb } from "$db";
 
-const noLinksMessage = (filter: string): string =>
-    `There are no links unblocked for ${filter}`;
+const filterMap: Record<string, { fn: (link: string) => Promise<boolean>; name: string }> = {
+    ls: { fn: ls, name: "Lightspeed" },
+    paloalto: { fn: paloalto, name: "Palo Alto Networks" },
+    fortiguard: { fn: fortiguard, name: "Fortiguard" },
+    linewize: { fn: linewize, name: "Linewize" },
+};
 
 export default async (
     guildId: string,
@@ -22,18 +26,17 @@ export default async (
         ...(premium
             ? {}
             : {
-                    $or: [
-                        { isPremium: false },
-                        { isPremium: "false" },
-                        { isPremium: { $exists: false } },
-                    ],
+                  $or: [
+                      { isPremium: false },
+                      { isPremium: "false" },
+                      { isPremium: { $exists: false } },
+                  ],
               }),
     };
 
     const links = await linksDb.find(query).toArray();
     if (links.length === 0) return "There are no links!";
 
-    // Filter out owned links
     const filteredLinks = links
         .map((entry) => entry.link)
         .filter((link) => !ownedLinks.includes(link));
@@ -42,45 +45,32 @@ export default async (
         return new Error("We ran out of links to give you!");
     }
 
-    // Helper function to check links against a filter
-    const checkLinks = async (
-        links: Array<string>,
-        filterFn: (link: string) => Promise<boolean>,
-        filterName: string
-    ): Promise<Array<string>> => {
-        const validLinks = [];
-        for (const link of links) {
+    // Helper function to check if a link passes all filters
+    const isLinkUnblocked = async (link: string): Promise<boolean> => {
+        for (const filter of filters) {
+            const filterData = filterMap[filter];
+            if (!filterData) continue; // Skip unknown filters
+
             try {
-                if (await filterFn(link)) {
-                    validLinks.push(link);
+                console.time(`Checking ${link} with ${filterData.name}`);
+                const isUnblocked = await filterData.fn(link);
+                console.timeEnd(`Checking ${link} with ${filterData.name}`);
+                if (!isUnblocked) {
+                    console.log(`Link blocked by ${filterData.name}`);
+                    return false; // Link is blocked by this filter
                 }
             } catch (_e) {
-                console.error(`An error occurred while checking on ${filterName}`);
+                console.error(`An error occurred while checking with ${filterData.name}`);
             }
         }
-        if (validLinks.length === 0) throw new Error(noLinksMessage(filterName));
-        return validLinks;
+        return true;
     };
 
-    // Apply filters sequentially
-    let unblockedList = filteredLinks;
-    try {
-        if (filters.includes("ls")) {
-            unblockedList = await checkLinks(unblockedList, ls, "Lightspeed");
+    for (const link of filteredLinks) {
+        if (await isLinkUnblocked(link)) {
+            return link;
         }
-        if (filters.includes("paloalto")) {
-            unblockedList = await checkLinks(unblockedList, paloalto, "Palo Alto Networks");
-        }
-        if (filters.includes("fortiguard")) {
-            unblockedList = await checkLinks(unblockedList, fortiguard, "FortiGuard");
-        }
-        if (filters.includes("linewize")) {
-            unblockedList = await checkLinks(unblockedList, linewize, "Linewize");
-        }
-    } catch (error: Error) {
-        return error.message;
     }
 
-    // Return a random link from the unblocked list
-    return unblockedList[Math.floor(Math.random() * unblockedList.length)];
+    return "There are no unblocked links left!";
 };

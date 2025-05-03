@@ -5,19 +5,27 @@
 	"directories": {
 		"doc": "docs"
 	},
-	"dependencies": {},
-	"devDependencies": {},
+	"dependencies": {
+		"@discordeno/bot": "^21.0.0",
+		"@discordeno/types": "^21.0.0",
+		"mongodb": "^6.16.0",
+		"hono": "^4.7.5"		
+	},
+	"devDependencies": {
+		"typescript": "5.8.3"
+	},
+	"imports": {},
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"pretty": "deno fmt --check"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/VyperGroup/Dispenser.git"
+		"url": "git+https://github.com/dave9123/Dispenser-v2.git"
 	},
-	"author": "Ryan Wilson",
+	"author": "Dave Turmawan",
 	"license": "AGPL-3.0-or-later",
 	"bugs": {
-		"url": "https://github.com/VyperGroup/Dispenser/issues"
+		"url": "https://github.com/dave9123/Dispenser-v2/issues"
 	},
 	"homepage": "https://github.com/VyperGroup/Dispenser#readme"
 }

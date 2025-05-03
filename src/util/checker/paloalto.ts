@@ -16,7 +16,7 @@ const blockedCats = [
 
 export default async function (link: string): Promise<boolean> {
     console.info(`Checking ${link} on Palo Alto Networks`);
-    const response = await fetch(`https://urlfiltering.paloaltonetworks.com/single_cr/?url=${link}`, {
+    const response = await fetch("https://urlfiltering.paloaltonetworks.com/single_cr/?url=" + link, {
         "credentials": "include",
         "headers": {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0",

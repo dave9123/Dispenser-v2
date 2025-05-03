@@ -1,4 +1,3 @@
-import { MessageComponentTypes } from "https://deno.land/x/discordeno@13.0.0-rc18/mod.ts";
 import {
 	ApplicationCommandOptionTypes,
 	ApplicationCommandTypes,
@@ -6,7 +5,8 @@ import {
 	ButtonStyles,
 	Interaction,
 	InteractionResponseTypes,
-} from "https://deno.land/x/discordeno@13.0.0-rc45/mod.ts";
+	MessageComponentTypes
+} from "@discordeno/bot";
 
 import { linksDb } from "$db";
 

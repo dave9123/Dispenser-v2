@@ -1,9 +1,8 @@
 import {
-	ApplicationCommandOptionTypes,
 	ApplicationCommandTypes,
 	Bot,
 	Interaction,
-} from "discordeno";
+} from "@discordeno/bot";
 
 import { catsDb, linksDb } from "$db";
 
@@ -15,7 +14,7 @@ const data = {
 	type: ApplicationCommandTypes.ChatInput,
 	options: [
 		{
-			type: ApplicationCommandOptionTypes.User,
+			type: ApplicationCommandTypes.Message,
 			name: "category1",
 			description: "The category to replace",
 			required: true,
@@ -33,8 +32,8 @@ const data = {
 async function handle(bot: Bot, interaction: Interaction) {
 	const responder = new Responder(bot, interaction.id, interaction.token);
 
-	const cat1: string = interaction.data?.options?.[0]?.value;
-	const cat2: string = interaction.data?.options?.[1]?.value;
+	const cat1 = interaction.data?.options?.[0]?.value as string;
+	const cat2 = interaction.data?.options?.[1]?.value as string;
 
 	const guildId = String(interaction.guildId);
 
@@ -68,7 +67,7 @@ async function handle(bot: Bot, interaction: Interaction) {
 		},
 	);
 
-	responder(`Renamed ${cat1} to ${cat2}`);
+	return responder.respond(`Renamed ${cat1} to ${cat2}`);
 }
 
 const adminOnly = true;

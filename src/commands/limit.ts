@@ -1,4 +1,9 @@
-import { ApplicationCommandTypes, ApplicationCommandOptionTypes, Bot, Interaction } from "discordeno";
+import {
+	ApplicationCommandTypes,
+	ApplicationCommandOptionTypes,
+	Bot,
+	Interaction
+} from "@discordeno/bot";
 
 import { limitsDb } from "$db";
 

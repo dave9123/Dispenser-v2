@@ -1,4 +1,4 @@
-import { Bot, Interaction } from "discordeno";
+import { Bot, Interaction } from "@discordeno/bot";
 
 import Responder from "../util/responder.ts";
 

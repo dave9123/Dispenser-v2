@@ -1,13 +1,9 @@
-import { Member } from "discordeno";
-
-import { validatePermissions } from "https://deno.land/x/discordeno@17.0.1/plugins/mod.ts";
+import { Member } from "@discordeno/bot";
 
 import { rolesDb } from "$db";
 
 export default async (member: Member, guildId: string): Promise<boolean> => {
-	if (
-		validatePermissions(member.permissions || BigInt(0), ["ADMINISTRATOR"])
-	) {
+	if (member.permissions?.has("ADMINISTRATOR")) {
 		return true;
 	}
 

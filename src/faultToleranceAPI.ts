@@ -22,13 +22,13 @@ export default function faultTolerantAPI() {
 	});
 
 	app.get("/isCommandWorking", async (c: Context) => {
-		const commandResult = faultToleranceDb.findOne({
-			commandName: await c.req.text(),
+		const commandResult = await faultToleranceDb.findOne({
+			commandName: await c.req.param("commandName"),
 		});
 
 		const resp: IsCommandWorkingResponse =
 			// The mere presence of the command name in that collection is enough to determine if it is broken
-			commandResult === null
+			await commandResult === null
 				? {
 					worked: true,
 				}

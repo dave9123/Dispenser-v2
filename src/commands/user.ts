@@ -3,7 +3,7 @@ import {
 	ApplicationCommandTypes,
 	Bot,
 	Interaction,
-} from "discordeno";
+} from "@discordeno/bot";
 
 import { usersDb } from "$db";
 

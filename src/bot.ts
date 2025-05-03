@@ -4,13 +4,12 @@ import {
 	createBot,
 	Interaction,
 	InteractionTypes,
-	startBot,
-} from "discordeno";
+} from "@discordeno/bot";
 
-import {
+/*import {
 	enableCachePlugin,
 	enableCacheSweepers,
-} from "https://deno.land/x/discordeno_cache_plugin@0.0.21/mod.ts";
+} from "https://deno.land/x/discordeno_cache_plugin@0.0.21/mod.ts";*/
 
 import filterHandle from "./util/filter.ts";
 import catHandle from "./util/cat.ts";
@@ -18,7 +17,6 @@ import requestHandle from "./util/request.ts";
 import reportHandle from "./util/report.ts";
 
 import Responder from "./util/responder.ts";
-
 import isAdmin from "./util/isAdmin.ts";
 
 import { faultToleranceDb } from "$db";
@@ -87,7 +85,8 @@ export default async function initBot(
 
 							await faultToleranceDb.insertOne({
 								commandName,
-								error: err.message,
+								error: err,
+								timestamp: new Date(),
 							});
 						}
 					} else if (
@@ -119,9 +118,8 @@ export default async function initBot(
 		},
 	});
 
-	const bot = enableCachePlugin(baseBot);
-
-	enableCacheSweepers(bot);
+	const bot = baseBot;/*enableCachePlugin(baseBot);
+	enableCacheSweepers(bot);*/
 
 	for await (
 		const file of Deno.readDir(new URL("./commands", import.meta.url))
@@ -137,17 +135,17 @@ export default async function initBot(
 
 				try {
 					console.log(`Uploading ${command.data.name}`);
-					bot.helpers.createGlobalApplicationCommand(command.data);
+					bot.rest.createGlobalApplicationCommand(command.data);
 				} catch (err) {
-					console.info(`Error in ${file.name}\n${err.stack}`);
+					console.info(`Error in ${file.name}:`, err);
 				}
 
 				commands.set(command.data.name, command);
 			} catch (err) {
-				console.log(`Error importing ${file.name}\n${err}`);
+				console.log(`Error importing ${file.name}:`, err);
 			}
 		}
 	}
 
-	await startBot(bot);
+	await bot.start();
 }

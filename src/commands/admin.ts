@@ -2,8 +2,8 @@ import {
 	ApplicationCommandOptionTypes,
 	ApplicationCommandTypes,
 	Bot,
-	Interaction,
-} from "discordeno";
+	Interaction
+} from "@discordeno/bot";
 
 import { rolesDb } from "$db";
 

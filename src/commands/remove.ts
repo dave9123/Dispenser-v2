@@ -1,4 +1,4 @@
-import { ApplicationCommandTypes, Bot, Interaction } from "discordeno";
+import { ApplicationCommandTypes, Bot, Interaction } from "@discordeno/bot";
 
 import { linksDb } from "$db";
 

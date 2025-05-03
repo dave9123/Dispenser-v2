@@ -2,9 +2,9 @@
 	"imports": {
 		"$config": "./config.ts",
 		"$db": "./src/db.ts",
-		"discordeno": "https://deno.land/x/discordeno@17.0.1/mod.ts",
-		"keyv-mongodb": "npm:keyv-mongodb@^3.0.0",
-		"mongodb": "npm:mongodb@^6.15.0",
+		"@discordeno/types": "npm:@discordeno/types@^21.0.0",
+		"@discordeno/bot": "npm:@discordeno/bot@^21.0.0",
+		"mongodb": "npm:mongodb@^6.16.0",
 		"hono": "npm:hono@^4.7.5"
 	},
 	"fmt": {

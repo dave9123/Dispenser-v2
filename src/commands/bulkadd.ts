@@ -8,12 +8,12 @@ import { linksDb } from "$db";
 import Responder from "../util/responder.ts"
 
 const data = {
-    name: "add",
-    description: "Adds a new link",
+    name: "bulkadd",
+    description: "Bulk adds link(s)",
     type: ApplicationCommandTypes.ChatInput,
     options: [
         {
-            type: ApplicationCommandOptionTypes.String,
+            type: ApplicationCommandOptionTypes.Attachment,
             name: "link",
             description: "The link to add",
             required: true,
@@ -41,13 +41,15 @@ const data = {
 async function handle(bot: Bot, interaction: Interaction): Promise<void> {
     const responder = new Responder(bot, interaction.id, interaction.token);
 
-    const link = interaction.data?.options?.find(option => option.name === "link")?.value as string;
+    const link = interaction.data?.options?.find(option => option.name === "link")?.value;
     const cat = interaction.data?.options?.find(option => option.name === "category")?.value as string;
     const premium = interaction.data?.options?.find(option => option.name === "premium")?.value as string;
 
     const isPremium = premium == "true";
+    console.log(link);
+    await responder.respond("test");
 
-    const toInsert = {
+    /*const toInsert = {
         guildId: String(interaction.guildId),
         link,
         cat,
@@ -70,7 +72,7 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
     } else {
         await linksDb.insertOne(toInsert);
         await responder.respond(`Added ${link} to ${cat}!`);
-    }
+    }*/
 }
 
 const adminOnly = true;

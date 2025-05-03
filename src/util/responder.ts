@@ -1,9 +1,12 @@
 import {
-	Bot,
-	Embed,
 	InteractionResponseTypes,
-	MessageFlags,
-} from "https://deno.land/x/discordeno@13.0.0-rc18/mod.ts";
+	MessageFlags
+} from "@discordeno/types";
+
+import {
+	Bot,
+	Embed
+} from "@discordeno/bot";
 
 // Rename respond to response
 export default class {
@@ -17,27 +20,27 @@ export default class {
 		this.token = token;
 	}
 	async respond(msg: string) {
-		return await this.bot.helpers.sendInteractionResponse(
+		return await this.bot.rest.sendInteractionResponse(
 			this.id,
 			this.token,
 			{
 				type: InteractionResponseTypes.ChannelMessageWithSource,
 				data: {
 					content: msg,
-					flags: MessageFlags.Empheral,
+					flags: MessageFlags.Ephemeral,
 				},
 			},
 		);
 	}
-	async respondEmbed(embed: Embed) {
-		return await this.bot.helpers.sendInteractionResponse(
+	async respondEmbed(embed: Array<Embed>) {
+		return await this.bot.rest.sendInteractionResponse(
 			this.id,
 			this.token,
 			{
 				type: InteractionResponseTypes.ChannelMessageWithSource,
 				data: {
 					embeds: [embed],
-					flags: MessageFlags.Empheral,
+					flags: MessageFlags.Ephemeral,
 				},
 			},
 		);
