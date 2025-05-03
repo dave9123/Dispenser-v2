@@ -16,13 +16,13 @@
 	},
 	"imports": {},
 	"scripts": {
-		"pretty": "deno fmt --check"
+		"prettify": "deno fmt --check"
 	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/dave9123/Dispenser-v2.git"
 	},
-	"author": "Dave Turmawan",
+	"author": "Ryan Wilson and Dave Turmawan",
 	"license": "AGPL-3.0-or-later",
 	"bugs": {
 		"url": "https://github.com/dave9123/Dispenser-v2/issues"

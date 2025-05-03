@@ -61,6 +61,8 @@ export default async (
                 }
             } catch (_e) {
                 console.error(`An error occurred while checking with ${filterData.name}`);
+            } catch (e) {
+                console.error(`An error occurred while checking on ${filterName}:`, e);
             }
         }
         return true;

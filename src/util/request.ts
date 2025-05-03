@@ -144,12 +144,13 @@ export default async function (
 			})
 			.catch(async (error: Error) => {
 				console.error(`Failed to send DM to ${name} (${userId}) for ${cat}:`, error);
+				console.log("includes",error.message.includes("Cannot send messages to this user"));
 				if (error.message.includes("Cannot send messages to this user")) {
 					return await responder.respondEmbed({
 						type: "rich",
 						color: 0xe071ac,
 						title: cat,
-						description: `${link}\n${linksLeftMsg("You have ")}`,
+						description: `${link}`,
 						footer: {
 							text: linksLeftMsg("You have "),
 						},
@@ -162,7 +163,7 @@ export default async function (
 			type: "rich",
 			color: 0xe071ac,
 			title: cat,
-			description: `${link}\n${linksLeftMsg("You have ")}`,
+			description: `${link}`,
 			footer: {
 				text: linksLeftMsg("You have "),
 			},
