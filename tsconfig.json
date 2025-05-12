@@ -1,9 +1,0 @@
-{
-    "compilerOptions": {
-        "baseUrl": "src",
-        "paths": {
-            "$config": ["config.ts"],
-            "$db": ["src/db.ts"]
-        }
-    }
-}

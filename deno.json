@@ -5,7 +5,7 @@
 		"@discordeno/types": "npm:@discordeno/types@^21.0.0",
 		"@discordeno/bot": "npm:@discordeno/bot@^21.0.0",
 		"mongodb": "npm:mongodb@^6.16.0",
-		"hono": "npm:hono@^4.7.5"
+		"hono": "npm:hono@^4.7.9"
 	},
 	"fmt": {
 		"indentWidth": 4,

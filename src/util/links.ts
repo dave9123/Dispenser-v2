@@ -59,10 +59,8 @@ export default async (
                     console.log(`Link blocked by ${filterData.name}`);
                     return false; // Link is blocked by this filter
                 }
-            } catch (_e) {
-                console.error(`An error occurred while checking with ${filterData.name}`);
             } catch (e) {
-                console.error(`An error occurred while checking on ${filterName}:`, e);
+                console.error(`An error occurred while checking with ${filterData.name}:`, e);
             }
         }
         return true;

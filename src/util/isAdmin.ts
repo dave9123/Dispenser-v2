@@ -12,6 +12,6 @@ export default async (member: Member, guildId: string): Promise<boolean> => {
 	})) || {};
 
 	if (!admin) return false;
-
+	
 	return member.roles.includes(BigInt(admin));
 };

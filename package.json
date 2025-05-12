@@ -9,7 +9,7 @@
 		"@discordeno/bot": "^21.0.0",
 		"@discordeno/types": "^21.0.0",
 		"mongodb": "^6.16.0",
-		"hono": "^4.7.5"		
+		"hono": "^4.7.9"		
 	},
 	"devDependencies": {
 		"typescript": "5.8.3"

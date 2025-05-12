@@ -3,7 +3,7 @@
   "specifiers": {
     "npm:@discordeno/bot@21": "21.0.0",
     "npm:@discordeno/types@21": "21.0.0",
-    "npm:hono@^4.7.5": "4.7.8",
+    "npm:hono@^4.7.9": "4.7.9",
     "npm:mongodb@*": "6.16.0",
     "npm:mongodb@^6.16.0": "6.16.0",
     "npm:typescript@5.8.3": "5.8.3"
@@ -66,8 +66,8 @@
     "fzstd@0.1.1": {
       "integrity": "sha512-dkuVSOKKwh3eas5VkJy1AW1vFpet8TA/fGmVA5krThl8YcOVE/8ZIoEA1+U1vEn5ckxxhLirSdY837azmbaNHA=="
     },
-    "hono@4.7.8": {
-      "integrity": "sha512-PCibtFdxa7/Ldud9yddl1G81GjYaeMYYTq4ywSaNsYbB1Lug4mwtOMJf2WXykL0pntYwmpRJeOI3NmoDgD+Jxw=="
+    "hono@4.7.9": {
+      "integrity": "sha512-/EsCoR5h7N4yu01TDu9GMCCJa6ZLk5ZJIWFFGNawAXmd1Tp53+Wir4xm0D2X19bbykWUlzQG0+BvPAji6p9E8Q=="
     },
     "memory-pager@1.5.0": {
       "integrity": "sha512-ZS4Bp4r/Zoeq6+NLJpP+0Zzm0pR8whtGPf1XExKLJBAczGMnSi3It14OiNCStjQjM6NU1okjQGSxgEZN8eBYKg=="
@@ -124,14 +124,14 @@
     "dependencies": [
       "npm:@discordeno/bot@21",
       "npm:@discordeno/types@21",
-      "npm:hono@^4.7.5",
+      "npm:hono@^4.7.9",
       "npm:mongodb@^6.16.0"
     ],
     "packageJson": {
       "dependencies": [
         "npm:@discordeno/bot@21",
         "npm:@discordeno/types@21",
-        "npm:hono@^4.7.5",
+        "npm:hono@^4.7.9",
         "npm:mongodb@^6.16.0",
         "npm:typescript@5.8.3"
       ]

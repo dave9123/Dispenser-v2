@@ -40,8 +40,8 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 	const responder = new Responder(bot, interaction.id, interaction.token);
 	
 	const cat = interaction.data?.options?.find(option => option.name === "category")?.value as string;
-	const limit = Number(interaction.data?.options?.find(option => option.name === "limit")?.value as string | undefined);
-	const premiumLimit = Number(interaction.data?.options?.find(option => option.name === "premiumlimit")?.value as string | undefined);
+	const limit = interaction.data?.options?.find(option => option.name === "limit")?.value as number | undefined;
+	const premiumLimit = interaction.data?.options?.find(option => option.name === "premiumlimit")?.value as number | undefined;
 
 	if (!cat) {
 		await responder.respond("Please provide a category!");

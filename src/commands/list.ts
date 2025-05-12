@@ -71,6 +71,10 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 	};
 
 	const list: string = await getList();
+	if (list.length >= 2000) {
+		console.log("List is too long");,
+	}
+	console.log(list.length);
 
 	await responder.respond(!list ? "Unable to format the list" : list);
 }

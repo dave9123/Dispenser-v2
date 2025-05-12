@@ -120,6 +120,12 @@ async function handle(bot: Bot, interaction: Interaction) {
 		return await responder.respond("There are no links!");
 	}
 
+	if (cats.length > 25) {
+		return await responder.respond(
+			"Too many categories, please set categories!",
+		);
+	}
+
 	// Create dropdown
 
 	const options = cats.map(function (cat) {
@@ -152,70 +158,68 @@ async function handle(bot: Bot, interaction: Interaction) {
 		},
 	];
 
-	const embed = {
-		type: InteractionResponseTypes.ChannelMessageWithSource,
-		data: {
-			embeds: [
-				{
-					type: "rich",
-					color: parseInt(`0x${color}`),
-					title: title,
-					footer: {
-						text: footer,
-					},
-				},
-			],
-			components: [
-				{
-					type: MessageComponentTypes.ActionRow,
-					components: [
-						{
-							type: MessageComponentTypes.SelectMenu,
-							customId: "cat",
-							placeholder: catTitle,
-							options: options,
-						},
-					],
-				},
-				{
-					type: MessageComponentTypes.ActionRow,
-					components: [
-						{
-							type: MessageComponentTypes.SelectMenu,
-							customId: "filter",
-							placeholder: filterTitle,
-							options: filters,
-							maxValues: filters.length,
-						},
-					],
-				},
-				{
-					type: MessageComponentTypes.ActionRow,
-					components: [
-						{
-							type: MessageComponentTypes.Button,
-							label: button,
-							customId: dmUser ? "dmRequest" : "request",
-							style: ButtonStyles.Primary,
-							disabled: false,
-						},
-						{
-							type: MessageComponentTypes.Button,
-							label: "Report",
-							customId: "report",
-							style: ButtonStyles.Danger,
-							disabled: false,
-						},
-					],
-				},
-			],
-		},
-	};
-
-	return await bot.helpers.sendInteractionResponse(
+	return await bot.rest.sendInteractionResponse(
 		interaction.id,
 		interaction.token,
-		embed,
+		{
+			type: InteractionResponseTypes.ChannelMessageWithSource,
+			data: {
+				embeds: [
+					{
+						type: "rich",
+						color: parseInt(`0x${color}`),
+						title: title,
+						footer: {
+							text: footer,
+						},
+					},
+				],
+				components: [
+					{
+						type: MessageComponentTypes.ActionRow,
+						components: [
+							{
+								type: MessageComponentTypes.SelectMenu,
+								customId: "cat",
+								placeholder: catTitle,
+								options: options,
+							},
+						],
+					},
+					{
+						type: MessageComponentTypes.ActionRow,
+						components: [
+							{
+								type: MessageComponentTypes.SelectMenu,
+								customId: "filter",
+								placeholder: filterTitle,
+								options: filters,
+								maxValues: filters.length,
+							},
+						],
+					},
+					{
+						type: MessageComponentTypes.ActionRow,
+						components: [
+							{
+								type: MessageComponentTypes.Button,
+								label: button,
+								customId: dmUser ? "dmRequest" : "request",
+								style: ButtonStyles.Primary,
+								disabled: false,
+							},
+							{
+								type: MessageComponentTypes.Button,
+								label: "Report",
+								customId: "report",
+								style: ButtonStyles.Danger,
+								disabled: false,
+							},
+						],
+					},
+				],
+			},
+		},
 	);
 }
 
