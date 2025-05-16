@@ -70,13 +70,14 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 		);
 	};
 
-	const list: string = await getList();
+	let list: string = await getList();
 	if (list.length >= 2000) {
-		console.log("List is too long");,
+		console.log("List is too long");
 	}
 	console.log(list.length);
-
-	await responder.respond(!list ? "Unable to format the list" : list);
+	const slice = list.slice(0, 1998);
+	console.log(list);
+	await responder.respond(!list ? "Unable to format the list" : slice);
 }
 
 const adminOnly = true;

@@ -93,7 +93,7 @@ export default async function initBot(
 							"You don't have permission to run this command!",
 						);
 					}
-
+					let t = performance.now();
 					try {
 						await command?.handle(bot, interaction);
 
@@ -112,6 +112,7 @@ export default async function initBot(
 							timestamp: new Date(),
 						});
 					}
+					console.info(commandName + " command took", performance.now() - t, "ms");
 				} else if (
 					interaction.type === InteractionTypes.MessageComponent
 				) {
@@ -128,11 +129,13 @@ export default async function initBot(
 					const isCat = id === "cat";
 					const isFilter = id === "filter";
 
+					let t = performance.now();
 					if (isDmRequest) requestHandle(bot, interaction, true);
 					else if (isRequest) requestHandle(bot, interaction, false);
 					else if (isReport) reportHandle(bot, interaction);
 					else if (isCat) catHandle(bot, interaction);
 					else if (isFilter) filterHandle(bot, interaction);
+					console.info(id + " took", performance.now() - t, "ms");
 				}
 			} catch (err) {
 				console.log(err);
