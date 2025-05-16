@@ -31,6 +31,7 @@ const data = {
 
 async function handle(bot: Bot, interaction: Interaction) {
 	const responder = new Responder(bot, interaction.id, interaction.token);
+	await responder.deferredResponse();
 
 	const cat1 = interaction.data?.options?.[0]?.value as string;
 	const cat2 = interaction.data?.options?.[1]?.value as string;
@@ -67,7 +68,7 @@ async function handle(bot: Bot, interaction: Interaction) {
 		},
 	);
 
-	return responder.respond(`Renamed ${cat1} to ${cat2}`);
+	return responder.update(`Renamed ${cat1} to ${cat2}`);
 }
 
 const adminOnly = true;

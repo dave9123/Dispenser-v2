@@ -8,5 +8,5 @@ export default async function (
 ): Promise<void> {
 	const responder = new Responder(bot, interaction.id, interaction.token);
 
-	await responder.respond("Reports are a work in progress");
+	await responder.respond("Report command is being worked on.");
 }

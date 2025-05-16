@@ -26,6 +26,8 @@ const data = {
 
 async function handle(bot: Bot, interaction: Interaction) {
 	const responder = new Responder(bot, interaction.id, interaction.token);
+	await responder.deferredResponse();
+
 	const guildId = String(interaction.guildId);
 	const roleId = interaction.data?.options?.[0]?.value;
 
@@ -43,7 +45,7 @@ async function handle(bot: Bot, interaction: Interaction) {
 		},
 	);
 
-	return await responder.respond(`Gave premium status to ${roleId}`);
+	return await responder.update(`Gave premium status to ${roleId}`);
 }
 
 const adminOnly = true;

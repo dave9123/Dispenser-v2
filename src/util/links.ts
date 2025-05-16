@@ -57,7 +57,7 @@ export default async (
                 console.timeEnd(`Checking ${link} with ${filterData.name}`);
                 if (!isUnblocked) {
                     console.log(`Link blocked by ${filterData.name}`);
-                    return false; // Link is blocked by this filter
+                    return false;
                 }
             } catch (e) {
                 console.error(`An error occurred while checking with ${filterData.name}:`, e);

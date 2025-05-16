@@ -30,7 +30,6 @@ const isDebug = Deno.args.includes("--debug");
 export default async function initBot(
 	token: string,
 ): Promise<void> {
-
 	const bot: Bot = createBot({
 		token,
 		desiredProperties: createDesiredPropertiesObject({

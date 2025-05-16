@@ -40,6 +40,7 @@ const data = {
 
 async function handle(bot: Bot, interaction: Interaction): Promise<void> {
     const responder = new Responder(bot, interaction.id, interaction.token);
+    await responder.deferredResponse();
 
     const link = interaction.data?.options?.find(option => option.name === "link")?.value as string;
     const cat = interaction.data?.options?.find(option => option.name === "category")?.value as string;
@@ -64,12 +65,12 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
     }
 
     if (await linksDb.findOne(toInsert)) {
-        await responder.respond("You can't insert a duplicate link!");
+        await responder.update("You can't insert a duplicate link!");
     } else if (validLink === false) {
-        await responder.respond("The link provided isn't valid which may cause filter checking to fail. However, link has been added successfully. Correct link example: `https://astroid.gg/`");
+        await responder.update("The link provided isn't valid which may cause filter checking to fail. However, link has been added successfully. Correct link example: `https://astroid.gg/`");
     } else {
         await linksDb.insertOne(toInsert);
-        await responder.respond(`Added ${link} to ${cat}!`);
+        await responder.update(`Added ${link} to ${cat}!`);
     }
 }
 

@@ -1,11 +1,9 @@
 import { ApplicationCommandTypes, InteractionResponseTypes, Bot, Interaction } from "@discordeno/bot";
-import discord from "@discordeno/bot";
 import { MessageFlags } from "@discordeno/types";
 
 import { limitsDb, linksDb, rolesDb } from "$db";
 
 import Responder from "../util/responder.ts";
-import { blob } from "node:stream/consumers";
 
 const data = {
 	name: "list",
@@ -24,6 +22,7 @@ const data = {
 
 async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 	const responder = new Responder(bot, interaction.id, interaction.token);
+	await responder.deferredResponse();
 
 	const cursor = await linksDb.find({ guildId: String(interaction.guildId) });
 
@@ -77,26 +76,28 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 	if (list.length >= 2000) {
 		const file = new Blob([list], { type: "text/plain" });
 		const fileName = `message.txt`;
-
-		await bot.rest.sendInteractionResponse(
-			interaction.id,
+		/*await bot.rest.editOriginalInteractionResponse(
 			interaction.token,
 			{
-				type: InteractionResponseTypes.ChannelMessageWithSource,
-				data: {
-					content: "Link list is too long, uploaded the link list.",
-					files: [
-						{
-							name: fileName,
-							blob: file,
-						},
-					],
-					flags: MessageFlags.Ephemeral,
-				},
+				content: "List is too long, sending as a file",
+				files: [
+					{
+						name: fileName,
+						blob: file,
+					},
+				],
+				flags: MessageFlags.Ephemeral,
 			},
+		);*/
+		await responder.updateMsgWithFile(
+			"List is too long, sending as a file.\n-# This feature is still in beta and we are open to any suggestions, please send us suggestions at [dave@dave9123.onmicrosoft.com](mailto:dave@dave9123.onmicrosoft.com)",
+			fileName,
+			file,
 		);
+		return;
 	} else {
-		await responder.respond(list);
+		await responder.update(list);
+		return;
 	}
 }
 

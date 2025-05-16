@@ -32,6 +32,7 @@ const data = {
 
 async function handle(bot: Bot, interaction: Interaction) {
 	const responder = new Responder(bot, interaction.id, interaction.token);
+	await responder.deferredResponse();
 
 	const userArg = interaction.data?.options?.[0]?.value;
 	const user = (userArg && (await bot.helpers.getUser(userArg))) ||
@@ -48,7 +49,7 @@ async function handle(bot: Bot, interaction: Interaction) {
 		});
 
 		if (!data) {
-			return await responder.respond(
+			return await responder.update(
 				`${
 					userId === interaction.user.id
 						? "You have"
@@ -57,7 +58,7 @@ async function handle(bot: Bot, interaction: Interaction) {
 			);
 		}
 
-		return await responder.respond(
+		return await responder.update(
 			`Links: ${data.links.join(", \n")}\nTimes: ${data.times}`,
 		);
 	} else {
@@ -69,7 +70,7 @@ async function handle(bot: Bot, interaction: Interaction) {
 			.toArray();
 
 		if (data.length <= 0) {
-			return await responder.respond(
+			return await responder.update(
 				`${
 					user.id === interaction.user.id
 						? "You have"
@@ -78,7 +79,7 @@ async function handle(bot: Bot, interaction: Interaction) {
 			);
 		}
 
-		return await responder.respond(
+		return await responder.update(
 			data
 				.map(
 					(o) =>

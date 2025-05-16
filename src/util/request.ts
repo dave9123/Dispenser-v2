@@ -14,6 +14,8 @@ export default async function (
 	dmUser: boolean,
 ) {
 	const responder = new Responder(bot, interaction.id, interaction.token);
+	await responder.deferredResponse();
+
 	const userId = String(interaction.user.id);
 	const guildId = String(interaction.guildId);
 	const name = interaction.user.username;
@@ -29,7 +31,7 @@ export default async function (
 		guildId: guildId,
 	})) || {};
 
-	if (!cat) return await responder.respond("Please choose a category");
+	if (!cat) return await responder.update("Please choose a category");
 
 	let user = await usersDb.findOne({
 		userId: userId,
@@ -59,7 +61,7 @@ export default async function (
 	})) || {};
 
 	if (!filters) {
-		return await responder.respond("Please choose your filters first");
+		return await responder.update("Please choose your filters first");
 	}
 
 	console.log(`${name} uses ${filters.join(", ")}`);
@@ -85,7 +87,7 @@ export default async function (
 		console.log(
 			`${name} reached the limit for ${cat}! ${user?.times}/${limit}`,
 		);
-		return await responder.respond("You have reached the monthly limit");
+		return await responder.update("You have reached the monthly limit");
 	}
 
 	const linksLeftMsg = (msg: string) =>
@@ -103,9 +105,9 @@ export default async function (
 
 	const link = await getLinks(guildId, links, filters, cat, premium);
 
-	if (link instanceof Error) return await responder.respond(link.message);
+	if (link instanceof Error) return await responder.update(link.message);
 	else if (typeof link !== "string") {
-		return await responder.respond(
+		return await responder.update(
 			"Unknown error retrieving link; this incident has been reported!",
 		);
 	}
@@ -125,14 +127,13 @@ export default async function (
 	);
 
 	if (dmUser) {
-		const chan = await bot.helpers.getDmChannel(userId);
-		const guild = await bot.helpers.getGuild(guildId);
+		const chan = await bot.rest.getDmChannel(userId);
+		const guild = await bot.rest.getGuild(guildId);
 
-		bot.helpers
+		bot.rest
 			.sendMessage(chan.id, {
 				embeds: [
 					{
-						type: "rich",
 						color: 0xe071ac,
 						title: cat,
 						description: `${link}\n${linksLeftMsg("You have ")}`,
@@ -146,7 +147,7 @@ export default async function (
 				console.error(`Failed to send DM to ${name} (${userId}) for ${cat}:`, error);
 				console.log("includes",error.message.includes("Cannot send messages to this user"));
 				if (error.message.includes("Cannot send messages to this user")) {
-					return await responder.respondEmbed({
+					return await responder.updateEmbed({
 						type: "rich",
 						color: 0xe071ac,
 						title: cat,
@@ -157,9 +158,9 @@ export default async function (
 					});
 				}
 			});
-		return await responder.respond("Check DMs!");
+		return await responder.update("Check your DMs!");
 	} else {
-		return await responder.respondEmbed({
+		return await responder.updateEmbed({
 			type: "rich",
 			color: 0xe071ac,
 			title: cat,

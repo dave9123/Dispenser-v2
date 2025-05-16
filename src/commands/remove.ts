@@ -27,6 +27,7 @@ const data = {
 
 async function handle(bot: Bot, interaction: Interaction) {
 	const responder = new Responder(bot, interaction.id, interaction.token);
+	await responder.deferredResponse();
 
 	const guildId = String(interaction.guildId);
 
@@ -34,20 +35,24 @@ async function handle(bot: Bot, interaction: Interaction) {
 	const link = interaction.data?.options?.[1]?.value;
 
 	if (!link) {
-		await linksDb.deleteMany({
+		if (await linksDb.deleteMany({
 			guildId: guildId,
 			cat: cat,
-		});
-
-		return await responder.respond(`Removed the category ${cat}`);
+		}).deletedCount === 0) {
+			return await responder.update(`No links found in ${cat}`);
+		} else {
+			return await responder.update(`Removed the category ${cat}`);
+		}
 	} else {
-		await linksDb.deleteMany({
+		if (await linksDb.deleteMany({
 			guildId: guildId,
 			link: link,
 			cat: cat,
-		});
-
-		return await responder.respond(`Removed ${link} from ${cat}`);
+		}).deletedCount === 0) {
+			return await responder.update(`No links found in ${cat} with the link ${link}`);
+		} else {
+			return await responder.update(`Removed ${link} from ${cat}`);
+		}
 	}
 }
 

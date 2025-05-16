@@ -71,6 +71,7 @@ const data = {
 
 async function handle(bot: Bot, interaction: Interaction) {
 	const responder = new Responder(bot, interaction.id, interaction.token);
+	await responder.deferredResponse(false);
 
 	const dmUser = interaction.data?.options?.find(
 		(opt) => opt.name === "dm",
@@ -112,17 +113,18 @@ async function handle(bot: Bot, interaction: Interaction) {
 			links
 				.map((entry) => entry.cat)
 				.filter((entry) => typeof entry !== "undefined")
-				.sort(),
+				.sort()
+				.slice(0, 24),
 		),
 	];
 
 	if (cats.length === 0) {
-		return await responder.respond("There are no links!");
+		return await responder.update("There are no links!");
 	}
 
 	if (cats.length > 25) {
 		return await responder.respond(
-			"Too many categories, please set categories!",
+			"Too many categories found, this will only show the first 25 categories",
 		);
 	}
 
@@ -158,67 +160,63 @@ async function handle(bot: Bot, interaction: Interaction) {
 		},
 	];
 
-	return await bot.rest.sendInteractionResponse(
-		interaction.id,
+	return await bot.rest.editOriginalInteractionResponse(
 		interaction.token,
 		{
-			type: InteractionResponseTypes.ChannelMessageWithSource,
-			data: {
-				embeds: [
-					{
-						type: "rich",
-						color: parseInt(`0x${color}`),
-						title: title,
-						footer: {
-							text: footer,
+			embeds: [
+				{
+					type: "rich",
+					color: parseInt(`0x${color}`),
+					title: title,
+					footer: {
+						text: footer,
+					},
+				},
+			],
+			components: [
+				{
+					type: MessageComponentTypes.ActionRow,
+					components: [
+						{
+							type: MessageComponentTypes.SelectMenu,
+							customId: "cat",
+							placeholder: catTitle,
+							options: options,
 						},
-					},
-				],
-				components: [
-					{
-						type: MessageComponentTypes.ActionRow,
-						components: [
-							{
-								type: MessageComponentTypes.SelectMenu,
-								customId: "cat",
-								placeholder: catTitle,
-								options: options,
-							},
-						],
-					},
-					{
-						type: MessageComponentTypes.ActionRow,
-						components: [
-							{
-								type: MessageComponentTypes.SelectMenu,
-								customId: "filter",
-								placeholder: filterTitle,
-								options: filters,
-								maxValues: filters.length,
-							},
-						],
-					},
-					{
-						type: MessageComponentTypes.ActionRow,
-						components: [
-							{
-								type: MessageComponentTypes.Button,
-								label: button,
-								customId: dmUser ? "dmRequest" : "request",
-								style: ButtonStyles.Primary,
-								disabled: false,
-							},
-							{
-								type: MessageComponentTypes.Button,
-								label: "Report",
-								customId: "report",
-								style: ButtonStyles.Danger,
-								disabled: false,
-							},
-						],
-					},
-				],
-			},
+					],
+				},
+				{
+					type: MessageComponentTypes.ActionRow,
+					components: [
+						{
+							type: MessageComponentTypes.SelectMenu,
+							customId: "filter",
+							placeholder: filterTitle,
+							options: filters,
+							maxValues: filters.length,
+						},
+					],
+				},
+				{
+					type: MessageComponentTypes.ActionRow,
+					components: [
+						{
+							type: MessageComponentTypes.Button,
+							label: button,
+							customId: dmUser ? "dmRequest" : "request",
+							style: ButtonStyles.Primary,
+							disabled: false,
+						},
+						{
+							type: MessageComponentTypes.Button,
+							label: "Report",
+							customId: "report",
+							style: ButtonStyles.Danger,
+							disabled: false,
+						},
+					],
+				},
+			],
 		},
 	);
 }

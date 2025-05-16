@@ -38,6 +38,7 @@ const data = {
 
 async function handle(bot: Bot, interaction: Interaction) {
 	const responder = new Responder(bot, interaction.id, interaction.token);
+	await responder.deferredResponse();
 
     const global = interaction.data?.options?.find(option => option.name === "global")?.value as boolean;
 	const user = interaction.data?.options?.find(option => option.name === "user")?.value;
@@ -51,10 +52,10 @@ async function handle(bot: Bot, interaction: Interaction) {
 		guildId: String(interaction.guildId)
 	};
 
-    if (!global && !user) return await responder.respond("Please set a user to reset!");
+    if (!global && !user) return await responder.update("Please set a user to reset!");
 	if (cat) filter.cat = cat;
     if (!global && user) filter.userId = String(user);
-    if (global && user) return await responder.respond("Please set either a user or the server to reset!");
+    if (global && user) return await responder.update("Please set either a user or the server to reset!");
 	await usersDb.updateMany(
 		filter,
 		{
@@ -67,8 +68,8 @@ async function handle(bot: Bot, interaction: Interaction) {
 			upsert: true,
 		},
 	);
-    if (!global && user) return await responder.respond(`Reset ${user}'s proxy limit!`);
-    if (global && !user) return await responder.respond(`Reset the server's proxy limit!`);
+    if (!global && user) return await responder.update(`Reset ${user}'s proxy limit!`);
+    if (global && !user) return await responder.update(`Reset the server's proxy limit!`);
 }
 
 const adminOnly = true;
