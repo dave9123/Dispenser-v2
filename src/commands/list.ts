@@ -1,8 +1,11 @@
-import { ApplicationCommandTypes, Bot, Interaction } from "@discordeno/bot";
+import { ApplicationCommandTypes, InteractionResponseTypes, Bot, Interaction } from "@discordeno/bot";
+import discord from "@discordeno/bot";
+import { MessageFlags } from "@discordeno/types";
 
 import { limitsDb, linksDb, rolesDb } from "$db";
 
 import Responder from "../util/responder.ts";
+import { blob } from "node:stream/consumers";
 
 const data = {
 	name: "list",
@@ -72,12 +75,29 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 
 	let list: string = await getList();
 	if (list.length >= 2000) {
-		console.log("List is too long");
+		const file = new Blob([list], { type: "text/plain" });
+		const fileName = `message.txt`;
+
+		await bot.rest.sendInteractionResponse(
+			interaction.id,
+			interaction.token,
+			{
+				type: InteractionResponseTypes.ChannelMessageWithSource,
+				data: {
+					content: "Link list is too long, uploaded the link list.",
+					files: [
+						{
+							name: fileName,
+							blob: file,
+						},
+					],
+					flags: MessageFlags.Ephemeral,
+				},
+			},
+		);
+	} else {
+		await responder.respond(list);
 	}
-	console.log(list.length);
-	const slice = list.slice(0, 1998);
-	console.log(list);
-	await responder.respond(!list ? "Unable to format the list" : slice);
 }
 
 const adminOnly = true;
