@@ -4,6 +4,7 @@ import {
 	createBot,
 	createDesiredPropertiesObject,
 	CompleteDesiredProperties,
+	DesiredPropertiesBehavior,
 	Interaction,
 	InteractionTypes,
 } from "@discordeno/bot";
@@ -30,36 +31,17 @@ const isDebug = Deno.args.includes("--debug");
 export default async function initBot(
 	token: string,
 ): Promise<void> {
-	const bot: Bot = createBot({
+	const bot: Bot = await createBot({
 		token,
-		desiredProperties: createDesiredPropertiesObject({
-			interaction: {
-				id: true,
-				data: true,
-				type: true,
-				guildId: true,
-				token: true,
-				channelId: true,
-				user: true,
-				member: true,
-				message: true,
-			},
-			member: {
-				permissions: true,
-				roles: true,
-			},
-			attachment: {
-				proxyUrl: true,
-				url: true
-			},
-		}),
-	} as CompleteDesiredProperties);
+		desiredPropertiesBehavior: DesiredPropertiesBehavior.ChangeType,
+		desiredProperties: createDesiredPropertiesObject({}, true) as CompleteDesiredProperties<{}, true>,
+	});
 
 	bot.events = {
 		ready(): void {
 			console.log("Ready!");
 		},
-		interactionCreate: async (interaction: Interaction) => {
+		interactionCreate: async (interaction) => {
 			try {
 				if (
 					interaction.type === InteractionTypes.ApplicationCommand
@@ -129,18 +111,35 @@ export default async function initBot(
 					const isFilter = id === "filter";
 
 					let t = performance.now();
-					if (isDmRequest) requestHandle(bot, interaction, true);
-					else if (isRequest) requestHandle(bot, interaction, false);
-					else if (isReport) reportHandle(bot, interaction);
-					else if (isCat) catHandle(bot, interaction);
-					else if (isFilter) filterHandle(bot, interaction);
-					console.info(id + " took", performance.now() - t, "ms");
+					try {
+						if (isDmRequest) requestHandle(bot, interaction, true);
+						else if (isRequest) requestHandle(bot, interaction, false);
+						else if (isReport) reportHandle(bot, interaction);
+						else if (isCat) catHandle(bot, interaction);
+						else if (isFilter) filterHandle(bot, interaction);
+					} catch (err) {
+						const errFmt = `Error running ${id}: ${err}`;
+						if (isDebug) throw new Error(errFmt);
+						else console.error(errFmt);
+						await faultToleranceDb.insertOne({
+							commandName: id,
+							error: err,
+							timestamp: new Date(),
+						});
+						await bot.rest.editOriginalInteractionResponse(
+							interaction.token,
+							{
+								content: "An error occurred while processing your request. Please try again later.",
+							},
+						);
+							console.info(id + " took", performance.now() - t, "ms");
+						}
+					}
+				} catch (err) {
+					console.log(err);
 				}
-			} catch (err) {
-				console.log(err);
-			}
-		},
-	}
+			},
+		}
 
 	/*const bot = enableCachePlugin(baseBot);
 	enableCacheSweepers(bot);*/
