@@ -103,7 +103,9 @@ export default async function (
 		}; having a total of ${times} links`,
 	);
 
+	let t = performance.now();
 	const link = await getLinks(guildId, links, filters, cat, premium);
+	console.info(`Link retrieved in ${performance.now()-t} ms`);
 
 	if (link instanceof Error) return await responder.update(link.message);
 	else if (typeof link !== "string") {
