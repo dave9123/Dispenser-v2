@@ -6,7 +6,7 @@ import {
 	CreateSlashApplicationCommand
 } from "@discordeno/bot";
 
-import { limitsDb } from "$db";
+import { linksDb, limitsDb } from "$db";
 
 import Responder from "../util/responder.ts";
 
@@ -56,15 +56,14 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 		return;
 	}
 	
-	const categoryExists = await limitsDb.findOne({
+	const categoryExists = await linksDb.findOne({
 		guildId: String(interaction.guildId),
 		cat: cat,
 	});
-	console.log(categoryExists);
-	/*if (!categoryExists) {
+	if (!categoryExists) {
 		await responder.update("This category does not exist, please set a proper category!");
 		return;
-	}*/
+	}
 
 	const updateData: { [key: string]: number } = {};
 	if (limit !== undefined) {
