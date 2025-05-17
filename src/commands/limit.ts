@@ -40,18 +40,19 @@ const data = {
 
 async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 	const responder = new Responder(bot, interaction.id, interaction.token);
+	await responder.deferredResponse();
 	
 	const cat = interaction.data?.options?.find(option => option.name === "category")?.value as string;
 	const limit = interaction.data?.options?.find(option => option.name === "limit")?.value;
 	const premiumLimit = interaction.data?.options?.find(option => option.name === "premiumlimit")?.value;
 	if (!cat) {
-		await responder.respond("Please provide a category!");
+		await responder.update("Please provide a category!");
 		return;
 	} else if (limit === undefined && premiumLimit === undefined) {
-		await responder.respond("Please provide a valid limit!");
+		await responder.update("Please provide a valid limit!");
 		return;
 	} else if ((limit !== undefined && limit < -1) || (premiumLimit !== undefined && premiumLimit < -1)) {
-		await responder.respond("Limit must be greater than or equal to -1!");
+		await responder.update("Limit must be greater than or equal to -1!");
 		return;
 	}
 	
@@ -59,10 +60,11 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 		guildId: String(interaction.guildId),
 		cat: cat,
 	});
-	if (!categoryExists) {
-		await responder.respond("This category does not exist, please set a proper category!");
+	console.log(categoryExists);
+	/*if (!categoryExists) {
+		await responder.update("This category does not exist, please set a proper category!");
 		return;
-	}
+	}*/
 
 	const updateData: { [key: string]: number } = {};
 	if (limit !== undefined) {
@@ -97,7 +99,7 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 	}
 	responseMessage += "!";
 
-	await responder.respond(responseMessage);
+	await responder.update(responseMessage);
 }
 
 const adminOnly = true;

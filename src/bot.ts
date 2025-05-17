@@ -43,7 +43,6 @@ export default async function initBot(
 		},
 		interactionCreate: async (interaction) => {
 			try {
-				console.log(interaction.type);
 				if (
 					interaction.type === InteractionTypes.ApplicationCommand
 				) {
@@ -60,7 +59,6 @@ export default async function initBot(
 					if (!command) return;
 
 					const commandName = command.data.name;
-					console.log(interaction.user)
 					if (
 						command?.adminOnly &&
 						!(await isAdmin(
