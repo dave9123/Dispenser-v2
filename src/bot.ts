@@ -43,6 +43,7 @@ export default async function initBot(
 		},
 		interactionCreate: async (interaction) => {
 			try {
+				console.log(interaction.type);
 				if (
 					interaction.type === InteractionTypes.ApplicationCommand
 				) {
@@ -65,6 +66,7 @@ export default async function initBot(
 						!(await isAdmin(
 							interaction.member,
 							String(interaction.guildId),
+							interaction.user,
 						))
 					) {
 						console.error(

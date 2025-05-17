@@ -2,7 +2,8 @@ import {
 	ApplicationCommandTypes,
 	ApplicationCommandOptionTypes,
 	Bot,
-	Interaction
+	Interaction,
+	CreateSlashApplicationCommand
 } from "@discordeno/bot";
 
 import { limitsDb } from "$db";
@@ -19,6 +20,7 @@ const data = {
 			name: "category",
 			description: "The category to be limited",
 			required: true,
+			//autocomplete: true,
 		},
 		{
 			type: ApplicationCommandOptionTypes.Integer,
@@ -34,7 +36,7 @@ const data = {
 		},
 	],
 	dmPermission: false,
-};
+} as CreateSlashApplicationCommand;
 
 async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 	const responder = new Responder(bot, interaction.id, interaction.token);
