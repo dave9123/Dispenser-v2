@@ -58,7 +58,7 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 		cat: cat,
 	});
 	if (!categoryExists) {
-		await responder.respond("This category does not exist!");
+		await responder.respond("This category does not exist, please set a proper category!");
 		return;
 	}
 
