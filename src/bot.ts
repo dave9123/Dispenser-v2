@@ -60,13 +60,13 @@ export default async function initBot(
 					if (!command) return;
 
 					const commandName = command.data.name;
-
+					console.log(interaction.user)
 					if (
 						command?.adminOnly &&
 						!(await isAdmin(
 							interaction.member,
 							String(interaction.guildId),
-							interaction.user,
+							interaction.user?.id,
 						))
 					) {
 						console.error(
