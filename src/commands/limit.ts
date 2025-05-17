@@ -87,6 +87,9 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 	if (limit !== undefined) {
 		responseMessage += ` limit to ${limit}`;
 	}
+	if (limit !== undefined && premiumLimit !== undefined) {
+		responseMessage += " and";
+	}
 	if (premiumLimit !== undefined) {
 		responseMessage += ` premium limit to ${premiumLimit}`;
 	}
