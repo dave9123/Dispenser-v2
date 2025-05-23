@@ -1,5 +1,4 @@
-import { ApplicationCommandTypes, InteractionResponseTypes, Bot, Interaction } from "@discordeno/bot";
-import { MessageFlags } from "@discordeno/types";
+import { ApplicationCommandTypes, Bot, Interaction } from "@discordeno/bot";
 
 import { limitsDb, linksDb, rolesDb } from "$db";
 

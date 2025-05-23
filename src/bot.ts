@@ -80,6 +80,7 @@ export default async function initBot(
 
 						faultToleranceDb.deleteMany({
 							commandName,
+							type: "command",
 						});
 					} catch (err) {
 						const errFmt =
@@ -90,6 +91,7 @@ export default async function initBot(
 						await faultToleranceDb.insertOne({
 							commandName,
 							error: err,
+							type: "command",
 							timestamp: new Date(),
 						});
 					}
@@ -134,6 +136,35 @@ export default async function initBot(
 						);
 							console.info(id + " took", performance.now() - t, "ms");
 						}
+					} else if (interaction.type === InteractionTypes.ApplicationCommandAutocomplete) {
+						const command = commands.get(
+							interaction.data?.name,
+						);
+
+						if (!command) return;
+
+						let t = performance.now();
+						try {
+							await command?.autocomplete(bot, interaction);
+							faultToleranceDb.deleteMany({
+								commandName: command.data.name,
+								type: "autocomplete",
+								
+							});
+						} catch (err) {
+							const errFmt =
+								`Error running ${command.data.name}: ${err}`;
+							if (isDebug) throw new Error(errFmt);
+							else console.error(errFmt);
+
+							await faultToleranceDb.insertOne({
+								commandName: command.data.name,
+								error: err,
+								type: "autocomplete",
+								timestamp: new Date(),
+							});
+						}
+						console.info(command.data.name + " autocomplete took", performance.now() - t, "ms");
 					}
 				} catch (err) {
 					console.log(err);
