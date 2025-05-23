@@ -16,7 +16,7 @@ const data = {
 		{
 			type: ApplicationCommandOptionTypes.Attachment,
 			name: "link",
-			description: "The link to add",
+			description: "The link to add, seperated by new line",
 			required: true,
 		},
 		{
