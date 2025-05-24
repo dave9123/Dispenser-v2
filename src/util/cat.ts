@@ -6,13 +6,14 @@ import { catsDb } from "$db";
 
 export default async function (bot: Bot, interaction: Interaction) {
 	const responder = new Responder(bot, interaction.id, interaction.token);
+	await responder.deferredResponse();
 
 	const userId = String(interaction.user.id);
 	const guildId = String(interaction.guildId);
 
 	const name = interaction.user.username;
 
-	const [cat] = interaction.data.values;
+	const [cat] = interaction.data?.values;
 
 	console.log(`${name} selected ${cat}`);
 
@@ -31,5 +32,5 @@ export default async function (bot: Bot, interaction: Interaction) {
 		},
 	);
 
-	return await responder.respond("Updated ✅");
+	return await responder.update("Updated ✅");
 }

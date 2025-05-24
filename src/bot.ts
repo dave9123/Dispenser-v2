@@ -39,7 +39,7 @@ export default async function initBot(
 
 	bot.events = {
 		ready(): void {
-			console.log("Ready!");
+			console.log("Ready!\n Debug mode:", isDebug);
 		},
 		interactionCreate: async (interaction) => {
 			try {

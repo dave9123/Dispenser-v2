@@ -28,7 +28,7 @@ start_deno_process() {
     
     if [ $EXIT_CODE -eq 0 ]; then
       echo "Deno process exited normally with code $EXIT_CODE. Exiting..." | tee -a "$LOGFILE"
-      exit 0
+      #exit 0
     else
       echo "Deno process exited with code $EXIT_CODE. Restarting..." | tee -a "$LOGFILE"
     fi
