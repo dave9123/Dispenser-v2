@@ -114,9 +114,8 @@ async function handle(bot: Bot, interaction: Interaction) {
 				.map((entry) => entry.cat)
 				.filter((entry) => typeof entry !== "undefined")
 				.sort()
-				.slice(0, 24),
 		),
-	];
+	].slice(0, 24);
 
 	if (cats.length === 0) {
 		return await responder.update("There are no links!");
