@@ -1,4 +1,4 @@
-import lightspeed from "./checker/lightspeed.ts";
+import ls from "./checker/ls.ts";
 import paloalto from "./checker/paloalto.ts";
 import fortiguard from "./checker/fortiguard.ts";
 import linewize from "./checker/linewize.ts";
@@ -6,7 +6,7 @@ import linewize from "./checker/linewize.ts";
 import { linksDb } from "$db";
 
 const filterMap: Record<string, { fn: (link: string) => Promise<boolean>; name: string }> = {
-    lightspeed: { fn: lightspeed, name: "Lightspeed" },
+    ls: { fn: ls, name: "Lightspeed" },
     paloalto: { fn: paloalto, name: "Palo Alto Networks" },
     fortiguard: { fn: fortiguard, name: "Fortiguard" },
     linewize: { fn: linewize, name: "Linewize" },
