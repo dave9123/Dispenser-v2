@@ -73,7 +73,7 @@ export default async function (link: string): Promise<boolean> {
 	const categorized = await Promise.all(
 		categories.map(async (cat) => {
 			try {
-				const data = await Deno.readFile("src/util/checker/lightspeed.json");
+				const data = await Deno.readFile("src/util/checker/ls.json");
 				const catJson = JSON.parse(new TextDecoder().decode(data));
 				for (let i = 0; i < catJson.length; i++) {
 					if (catJson[i]["CategoryNumber"] === cat) {
