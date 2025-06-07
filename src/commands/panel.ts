@@ -139,7 +139,7 @@ async function handle(bot: Bot, interaction: Interaction) {
 	const filters = [
 		{
 			label: "Lightspeed",
-			value: "ls",
+			value: "lightspeed",
 		},
 		{
 			label: "Palo Alto Networks",

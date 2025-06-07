@@ -1,6 +1,6 @@
+import config from "$config"
+
 const blockedCats = [
-	"local-allow",
-	"local-block",
 	"ads",
 	"adult",
 	"drugs",
@@ -44,25 +44,9 @@ const blockedCats = [
 	"violence.extremisim"
 ];
 
-async function lightspeedCategorize(num: number): Promise<string | number> {
-	try {
-		const data = await Deno.readFile("src/util/checker/ls.json");
-		const catJson = JSON.parse(new TextDecoder().decode(data));
-		for (let i = 0; i < catJson.length; i++) {
-			if (catJson[i]["CategoryNumber"] === num) {
-				return catJson[i]["CategoryName"];
-			}
-		}
-		return num;
-	} catch (error) {
-		console.error("Error reading or parsing ls.json:", error);
-		return num
-	}
-}
-
 export default async function (link: string): Promise<boolean> {
 	console.info(`Checking ${link} on Lightspeed`);
-	const response = await fetch("https://production-archive-proxy-api.lightspeedsystems.com/archiveproxy",
+	const response = await fetch(config.checker.ls,
 		{
 			"method": "POST",
 			"headers": {
@@ -87,7 +71,21 @@ export default async function (link: string): Promise<boolean> {
 	const categories = [body.data.a.cat, body.data.b.cat];
 
 	const categorized = await Promise.all(
-		categories.map((cat) => lightspeedCategorize(cat))
+		categories.map(async (cat) => {
+			try {
+				const data = await Deno.readFile("src/util/checker/lightspeed.json");
+				const catJson = JSON.parse(new TextDecoder().decode(data));
+				for (let i = 0; i < catJson.length; i++) {
+					if (catJson[i]["CategoryNumber"] === cat) {
+						return catJson[i]["CategoryName"];
+					}
+				}
+				return cat;
+			} catch (error) {
+				console.error("A problem occured while mapping categories:", error);
+				return cat;
+			}
+		})
 	);
 	const isUnblocked = blockedCats.every((cat) => !categorized.includes(cat));
 	console.info(`[Lightspeed] ${link} is under ${categorized} and may ${isUnblocked ? "not " : ""}be blocked`);

@@ -1,3 +1,5 @@
+import config from "$config";
+
 const blockedCats = [
     "Child Sexual Abuse",
     "Domain Parking",
@@ -14,7 +16,7 @@ const blockedCats = [
 
 export default async function (link: string): Promise<boolean> {
     console.info(`Checking ${link} on FortiGuard`);
-    const res = await fetch("https://www.fortiguard.com/learnmore/dns", {
+    const res = await fetch(config.checker.fortiguard, {
         "method": "POST",
         "headers": {
             'Accept': '*/*',

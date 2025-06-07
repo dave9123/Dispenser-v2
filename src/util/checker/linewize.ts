@@ -1,6 +1,8 @@
+import config from "$config";
+
 export default async function (link: string): Promise<boolean> {
 	console.info(`Checking ${link} on Linewize`);
-	const response = await fetch("https://mvgateway.syd-1.linewize.net/get/verdict?deviceid=PHYS-SMIC-US-0000-3190&cev=3.3.0&identity=null&requested_website=" + link, {
+	const response = await fetch(config.checker.linewize + link, {
         "credentials": "omit",
         "headers": {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0",

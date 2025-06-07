@@ -1,3 +1,5 @@
+import config from "$config";
+
 const blockedCats = [
     "Adult",
     "Alcohol-and-Tobacco",
@@ -16,7 +18,7 @@ const blockedCats = [
 
 export default async function (link: string): Promise<boolean> {
     console.info(`Checking ${link} on Palo Alto Networks`);
-    const response = await fetch("https://urlfiltering.paloaltonetworks.com/single_cr/?url=" + link, {
+    const response = await fetch(config.checker.paloalto + link, {
         "credentials": "include",
         "headers": {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0",
@@ -52,8 +54,11 @@ export default async function (link: string): Promise<boolean> {
         return false;
     }
 
-    const category = categoryMatch[1].trim();
-    const isUnblocked = !blockedCats.includes(category);
+    const category = categoryMatch[1]
+        .split(",")
+        .map(cat => cat.trim());
+    
+    const isUnblocked = !category.every(cat => blockedCats.includes(cat));
     console.info(`[Palo Alto Networks] ${link} is under ${category} and may ${isUnblocked ? "not " : ""}be blocked`);
     return isUnblocked;
 }
