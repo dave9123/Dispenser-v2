@@ -89,7 +89,7 @@ async function handle(bot: Bot, interaction: Interaction): Promise<void> {
 			},
 		);*/
 		await responder.updateMsgWithFile(
-			"List is too long, sending as a file.\n-# This feature is still in beta and we are open to any suggestions, please send us suggestions at [dave@dave9123.onmicrosoft.com](mailto:dave@dave9123.onmicrosoft.com)",
+			"List is too long, sending as a file.",
 			fileName,
 			file,
 		);
